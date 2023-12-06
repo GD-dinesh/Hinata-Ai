@@ -1,0 +1,146 @@
+import email
+import pyttsx3 #pip install pyttsx3
+import speech_recognition as sr #pip install speechRecognition
+import datetime
+import wikipedia #pip install wikipedia
+import webbrowser
+import os
+import datetime
+from ecapture import ecapture as ec
+import smtplib
+import pyjokes
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+# print(voices[1].id)
+engine.setProperty('voice', voices[1].id)
+
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+def date():
+    year = int(datetime.datetime.now().year)
+    month = int(datetime.datetime.now().month)
+    date = int(datetime.datetime.now().day)
+    speak("the current date is")
+    speak(date)
+    speak(month)
+    speak(year)
+
+def jokes():
+    speak(pyjokes.get_joke())
+
+def time():
+    Time = datetime.datetime.now().strftime("%I:%M:%S")
+    speak("the current time is")
+    speak(Time)
+
+def wishMe():
+    speak("welcome back GD")
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
+        speak("Good Morning!")
+
+    elif hour>=12 and hour<18:
+        speak("Good Afternoon!")   
+
+    else:
+        speak("Good Evening!")  
+
+    speak("i am hinata. i am your virtual assistent.  Please tell me how may I help you")       
+
+def takeCommand():
+    #It takes microphone input from the user and returns string output
+
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
+        audio = r.listen(source)
+
+    try:
+        print("Recognizing...")    
+        query = r.recognize_google(audio, language='en-in')
+        print(f"User said: {query}\n")
+
+    except Exception as e:
+        # print(e)    
+        print("Say that again please...")  
+        return "None"
+    return query
+
+
+if __name__ == "__main__":
+    wishMe()
+    while True:
+  
+        query = takeCommand().lower()
+
+        # Logic for executing tasks based on query
+        if 'wikipedia' in query:
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
+
+        elif 'open youtube' in query:
+            webbrowser.open("youtube.com")
+
+        elif 'open google' in query:
+            webbrowser.open("google.com")
+
+        elif 'open stackoverflow' in query:
+            webbrowser.open("stackoverflow.com")   
+
+
+        elif 'play music' in query:
+            music_dir = 'G:\\kishan all.co\\d\\songs'
+            songs = os.listdir(music_dir)
+            print(songs)    
+            os.startfile(os.path.join(music_dir, songs[0]))
+
+        elif 'the time' in query: 
+            time()
+
+        elif 'mother name' in query:
+            speak("your mom name is sel  lam")
+
+        elif 'where are you from' in query:
+            speak("i am from leaf village. and i am the byakugan princess")
+
+        elif 'my partner name' in query:
+            speak("suvega is your partner")
+
+        elif "camera" in query or "take a photo" in query:
+            ec.capture(0, "Jarvis Camera ", "img.jpg")
+
+        elif 'date' in query:
+            date()
+        
+        
+        elif "tell me a joke" in query:
+            jokes()
+
+        elif "don't listen" in query or "stop listening" in query:
+            speak("for how much time you want to stop Hinata from listening commands")
+            a = int(takeCommand())
+            time.sleep(a)
+            print(a)
+
+
+        elif 'open code' in query:
+            codePath = "E:\python"
+            os.startfile("E:\python")
+            #you should enter your path here
+
+        elif 'email to ' in query:
+                speak("What should I say?")
+                content = takeCommand()
+                to = "crazygd005@gmai.com"    
+                sendEmail(to, content)
+                speak("Email has been sent!")
+            
+
